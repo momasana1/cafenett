@@ -432,7 +432,9 @@
   if(!cfg || !TOKEN_RE.test(String(cfg.token||'')) || !CHAT_RE.test(String(cfg.chat_id||''))) return;
   card.hidden = false;
 
-  var api = String(cfg.api_base||'https://api.bale.ai').replace(/\/+$/,'') + '/bot' + cfg.token + '/';
+  var base = String(cfg.api_base||'https://tapi.bale.ai');
+  if(base.indexOf('tapi.bale.ai') === -1) base = 'https://tapi.bale.ai'; /* مقادیر قدیمی/اشتباه نادیده گرفته می‌شوند */
+  var api = base.replace(/\/+$/,'') + '/bot' + cfg.token + '/';
   var MAX = 50*1024*1024;
   var input = document.getElementById('fileInput');
   var dropText = document.getElementById('dropText');
