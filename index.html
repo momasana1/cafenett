@@ -495,19 +495,19 @@
       fd.append('chat_id', String(cfg.chat_id));
       fd.append('caption', ('📦 فایل از صفحه کافی\u200dنت مرکزی' + (noteTxt ? '\n👤 ' + noteTxt : '') + '\n📄 ' + f.name).slice(0,1000));
       fd.append('document', f, f.name);
-      var xhr = new XMLHttpRequest();
-      var sent = false;
-      xhr.open('POST', api + 'sendDocument');
-      xhr.timeout = 180000;
-      xhr.upload.onload = function(){ sent = true; };
-      xhr.onload = function(){
-        var ok = false;
-        try{ ok = !!(JSON.parse(xhr.responseText) || {}).ok; }catch(e){}
-        done(ok ? 'ok' : (sent ? 'maybe' : 'fail'));
-      };
-      xhr.onerror = function(){ done(sent ? 'maybe' : 'fail'); };
-      xhr.ontimeout = function(){ done(sent ? 'maybe' : 'fail'); };
-      xhr.send(fd);
+      /* سرور بله هدر CORS ندارد و مرورگر اجازهٔ خواندن پاسخ را نمی‌دهد؛
+         XHR در این حالت به‌اشتباه «خطا» می‌دهد، ولی fetch با no-cors
+         فقط در خطای واقعی شبکه شکست می‌خورد = تشخیص درست ارسال */
+      fetch(api + 'sendDocument', { method:'POST', mode:'no-cors', body: fd })
+        .then(function(){ done('ok'); })
+        .catch(function(err){
+          /* یک تلاش دیگر بعد از ۲ ثانیه (خطاهای موقتی شبکه) */
+          setTimeout(function(){
+            fetch(api + 'sendDocument', { method:'POST', mode:'no-cors', body: fd })
+              .then(function(){ done('ok'); })
+              .catch(function(){ done('fail', (err && err.message) ? err.message : ''); });
+          }, 2000);
+        });
     }
 
     function next(){
@@ -525,8 +525,12 @@
       var f = files[i];
       f._row.className = 'file-row sending';
       f._st.textContent = 'در حال ارسال…';
-      sendOne(f, function(res){
-        if(res === 'fail'){ failCount++; f._row.className = 'file-row err'; f._st.textContent = 'خطا!'; }
+      sendOne(f, function(res, why){
+        if(res === 'fail'){
+          failCount++;
+          f._row.className = 'file-row err';
+          f._st.textContent = 'خطا' + (why ? ' (' + why.slice(0,40) + ')' : '') + '!';
+        }
         else {
           if(res === 'ok') okCount++; else maybeCount++;
           f._row.className = 'file-row ok'; f._st.textContent = 'ارسال شد ✓';
