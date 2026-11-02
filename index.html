@@ -133,6 +133,39 @@
   .tel-btn .num{direction:ltr;unicode-bidi:embed;font-size:16.5px;font-weight:700;color:var(--text)}
   .tel-btn .lbl{font-size:11.5px;color:var(--muted)}
 
+  /* ---- file upload ---- */
+  .file-drop{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    padding:24px 14px;border:1.5px dashed rgba(255,217,122,.42);
+    border-radius:16px;background:rgba(255,217,122,.045);
+    color:var(--muted);font-size:13.5px;font-weight:700;text-align:center;
+    cursor:pointer;transition:all .2s ease;width:100%;
+  }
+  .file-drop:hover{background:rgba(255,217,122,.10);color:var(--text)}
+  .file-drop svg{width:30px;height:30px;stroke:var(--gold-1)}
+  .file-drop.has-files{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.07);color:#4ade80}
+  .note-input{
+    width:100%;margin-top:10px;padding:12px 14px;border-radius:14px;
+    font-family:inherit;font-size:14px;background:rgba(255,255,255,.06);
+    border:1px solid var(--card-border);color:var(--text);outline:none;
+  }
+  .note-input::placeholder{color:#5b657a}
+  .note-input:focus{border-color:var(--gold-2)}
+  .file-row{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    background:rgba(255,255,255,.05);border:1px solid var(--card-border);
+    border-radius:12px;padding:8px 12px;margin-top:8px;font-size:12.5px;
+  }
+  .file-row .fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:58%}
+  .file-row .st{color:var(--muted);font-size:11.5px;flex:none}
+  .file-row.sending .st{color:var(--gold-1)}
+  .file-row.ok .st{color:#4ade80}
+  .file-row.err .st{color:#f87171}
+  .send-btn{margin-top:12px;border:none;cursor:pointer;font-family:inherit}
+  .send-btn:disabled{opacity:.55;pointer-events:none}
+  .file-msg{margin-top:10px;font-size:12.5px;color:var(--muted);text-align:center;min-height:20px;line-height:1.8}
+  .file-size-hint{font-size:11px;color:var(--muted);margin-top:4px;text-align:center}
+
   /* ---- socials ---- */
   .social-hint{font-size:12.5px;color:var(--muted);margin:-6px 0 14px}
   .social-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
@@ -255,8 +288,41 @@
     </div>
   </section>
 
+  <!-- ===== FILE UPLOAD (فقط پس از تنظیم ربات بله نمایش داده می‌شود) ===== -->
+  <section class="card rise d4" id="fileCard" aria-label="ارسال فایل" hidden>
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      ارسال فایل به ما
+    </div>
+    <p class="social-hint">بدون نیاز به نصب هیچ برنامه‌ای؛ فایل‌تان (پرینت، جزوه، عکس و…) را همین‌جا انتخاب کنید تا مستقیم به چت ما ارسال شود</p>
+    <label class="file-drop" for="fileInput">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <span id="dropText">انتخاب فایل از گوشی</span>
+    </label>
+    <input type="file" id="fileInput" multiple style="display:none">
+    <input class="note-input" id="senderNote" type="text" placeholder="نام و شماره تماس شما (اختیاری)">
+    <div id="fileList"></div>
+    <button class="maps-btn send-btn" id="sendBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      ارسال فایل‌ها
+    </button>
+    <p class="file-msg" id="fileMsg"></p>
+    <p class="file-size-hint">حجم هر فایل حداکثر ۵۰ مگابایت</p>
+  </section>
+
   <!-- ===== SOCIALS ===== -->
-  <section class="card rise d4" aria-label="شبکه‌های اجتماعی">
+  <section class="card rise d5" aria-label="شبکه‌های اجتماعی">
     <div class="card-title">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -322,13 +388,14 @@
     </div>
   </section>
 
-  <footer class="rise d5">
+  <footer class="rise d6">
     <p class="brandline">کافی‌نت مرکزی — ملایر</p>
     <p>ارائه اینترنت پرسرعت در سراسر کشور</p>
   </footer>
 
 </div>
 
+<script src="bale-config.js"></script>
 <script>
   (function(){
     var btn = document.getElementById('copyAddr');
@@ -354,6 +421,120 @@
       }
     });
   })();
+</script>
+
+<script>
+(function(){
+  var cfg = window.BALE_CONFIG;
+  var TOKEN_RE = /^\d{5,15}:[A-Za-z0-9_-]{15,}$/;
+  var CHAT_RE  = /^-?\d{2,25}$/;
+  var card = document.getElementById('fileCard');
+  if(!cfg || !TOKEN_RE.test(String(cfg.token||'')) || !CHAT_RE.test(String(cfg.chat_id||''))) return;
+  card.hidden = false;
+
+  var api = String(cfg.api_base||'https://api.bale.ai').replace(/\/+$/,'') + '/bot' + cfg.token + '/';
+  var MAX = 50*1024*1024;
+  var input = document.getElementById('fileInput');
+  var dropText = document.getElementById('dropText');
+  var dropLabel = document.querySelector('.file-drop');
+  var list = document.getElementById('fileList');
+  var note = document.getElementById('senderNote');
+  var btn = document.getElementById('sendBtn');
+  var msg = document.getElementById('fileMsg');
+  var files = [];
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function fmtSize(b){
+    if(b >= 1048576) return (b/1048576).toFixed(1) + ' مگابایت';
+    if(b >= 1024) return Math.round(b/1024) + ' کیلوبایت';
+    return b + ' بایت';
+  }
+  function resetPicker(){
+    input.value = ''; files = []; list.innerHTML = '';
+    dropLabel.classList.remove('has-files');
+    dropText.textContent = 'انتخاب فایل از گوشی';
+  }
+
+  input.addEventListener('change', function(){
+    var picked = Array.prototype.slice.call(input.files || []);
+    list.innerHTML = ''; files = [];
+    picked.forEach(function(f){
+      if(f.size > MAX){
+        var row = document.createElement('div');
+        row.className = 'file-row err';
+        row.innerHTML = '<span class="fn">' + esc(f.name) + '</span><span class="st">خیلی بزرگ — حداکثر ۵۰MB</span>';
+        list.appendChild(row);
+        return;
+      }
+      files.push(f);
+      var row = document.createElement('div');
+      row.className = 'file-row';
+      row.innerHTML = '<span class="fn">' + esc(f.name) + '</span><span class="st">' + fmtSize(f.size) + '</span>';
+      f._row = row; f._st = row.querySelector('.st');
+      list.appendChild(row);
+    });
+    dropLabel.classList.toggle('has-files', files.length > 0);
+    dropText.textContent = files.length ? ('✓ ' + files.length + ' فایل آماده ارسال — برای تغییر دوباره بزنید') : 'انتخاب فایل از گوشی';
+    msg.textContent = ''; msg.style.color = '';
+  });
+
+  btn.addEventListener('click', function(){
+    if(!files.length){
+      msg.textContent = 'اول فایل‌تان را انتخاب کنید';
+      msg.style.color = '#f87171';
+      return;
+    }
+    btn.disabled = true;
+    var noteTxt = (note.value || '').trim().slice(0, 200);
+    var i = 0, okCount = 0, maybeCount = 0, failCount = 0;
+
+    function sendOne(f, done){
+      var fd = new FormData();
+      fd.append('chat_id', String(cfg.chat_id));
+      fd.append('caption', ('📦 فایل از صفحه کافی\u200dنت مرکزی' + (noteTxt ? '\n👤 ' + noteTxt : '') + '\n📄 ' + f.name).slice(0,1000));
+      fd.append('document', f, f.name);
+      var xhr = new XMLHttpRequest();
+      var sent = false;
+      xhr.open('POST', api + 'sendDocument');
+      xhr.timeout = 180000;
+      xhr.upload.onload = function(){ sent = true; };
+      xhr.onload = function(){
+        var ok = false;
+        try{ ok = !!(JSON.parse(xhr.responseText) || {}).ok; }catch(e){}
+        done(ok ? 'ok' : (sent ? 'maybe' : 'fail'));
+      };
+      xhr.onerror = function(){ done(sent ? 'maybe' : 'fail'); };
+      xhr.ontimeout = function(){ done(sent ? 'maybe' : 'fail'); };
+      xhr.send(fd);
+    }
+
+    function next(){
+      if(i >= files.length){
+        btn.disabled = false;
+        var parts = [];
+        if(okCount) parts.push(okCount + ' فایل با موفقیت ارسال شد ✓');
+        if(maybeCount) parts.push(maybeCount + ' فایل ارسال شد — برای اطمینان در چت بله ما بررسی کنید');
+        if(failCount) parts.push(failCount + ' فایل ارسال نشد؛ دوباره تلاش کنید');
+        msg.textContent = parts.join(' — ');
+        msg.style.color = failCount ? '#f87171' : '#4ade80';
+        if(!failCount && !maybeCount) resetPicker();
+        return;
+      }
+      var f = files[i];
+      f._row.className = 'file-row sending';
+      f._st.textContent = 'در حال ارسال…';
+      sendOne(f, function(res){
+        if(res === 'fail'){ failCount++; f._row.className = 'file-row err'; f._st.textContent = 'خطا!'; }
+        else {
+          if(res === 'ok') okCount++; else maybeCount++;
+          f._row.className = 'file-row ok'; f._st.textContent = 'ارسال شد ✓';
+        }
+        i++; next();
+      });
+    }
+    next();
+  });
+})();
 </script>
 </body>
 </html>
